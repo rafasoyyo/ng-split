@@ -15,12 +15,21 @@
                 direction: '@',
                 width: '@',
                 height: '@',
-                onDragStart: '=',
-                onDrag: '=',
-                onDragEnd: '='
+                gutterSize: '@',
+                snapOffset: '@',
+                cursor: '@',
+                onDragStart: '&',
+                onDrag: '&',
+                onDragEnd: '&'
             },
             controller: ['$scope', function ($scope) {
+
                 $scope.areas = [];
+                var areasOptions = {
+                    elements: [],
+                    sizes: [],
+                    minSizes: []
+                };
                 $scope.splitInstance = null;
 
                 this.direction = $scope.direction;
@@ -49,10 +58,6 @@
                         return;
                     }
 
-                    $scope.areas.forEach(function (a) {
-                        a.element.css('height', null);
-                    });
-
                     $scope.areas = $scope.areas.sort(function (a, b) {
                         if(a.element.previousElementSibling === null || b.element.nextElementSibling === null) return -1;
                         if(a.element.nextElementSibling === null || b.element.previousElementSibling === null) return 1;
@@ -61,35 +66,34 @@
                         return 0;
                     });
 
-
-                    var sizes = $scope.areas.map(function (a) {
-                        return a.size;
-                    });
-
-                    var elements = $scope.areas.map(function (a) {
-                        return a.element[0];
+                    angular.forEach($scope.areas, function(a){
+                        a.element.css('height', null);
+                        areasOptions.sizes.push(a.size);
+                        areasOptions.elements.push(a.element[0]);
+                        areasOptions.minSizes.push(a.minSize);
                     });
 
                     var params = {
                         direction: $scope.direction,
-                        sizes: sizes,
-                        gutterSize: 5,
-                        minSize: 100,
+                        sizes: areasOptions.sizes,
+                        gutterSize: Number($scope.gutterSize),
+                        snapOffset: Number($scope.snapOffset),
+                        cursor: $scope.cursor,
+                        minSize: areasOptions.minSizes,
                         onDragStart: $scope.onDragStart,
                         onDrag: $scope.onDrag,
                         onDragEnd: $scope.onDragEnd
                     };
 
-                    $scope.splitInstance = Split(elements, params);
+                    $scope.splitInstance = Split(areasOptions.elements, params);
                 });
 
             }],
             link: function(scope, element, attrs) {
 
                 element.css('display', 'block');
-                element.css('width', (scope.width && angular.isNumber(scope.width)) ? scope.width + 'px' : '100%');
-                element.css('height', (scope.height && angular.isNumber(scope.height)) ? scope.height + 'px' : '100%');
-
+                element.css('width', (scope.width ? ( !isNaN(scope.width) ? scope.width + 'px' : scope.width ) : '100%'));
+                element.css('height', (scope.height ? ( !isNaN(scope.height) ? scope.height + 'px' : scope.height ) : '100%'));
 
                 function getSpecificChildren(className) {
                     return Array.from(element[0].children).filter(function (elem) {
@@ -123,7 +127,8 @@
             replace: true,
             transclude: true,
             scope: {
-                size: '='
+                size: '=',
+                minSize: '='
             },
             link: function(scope, element, attrs, bgSplitCtrl) {
 
@@ -142,7 +147,8 @@
 
                 var areaData = {
                     element: element,
-                    size: Number(scope.size)
+                    size: Number(scope.size),
+                    minSize: Number(scope.minSize)
                 };
 
                 bgSplitCtrl.addArea(areaData);
