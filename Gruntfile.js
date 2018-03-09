@@ -67,15 +67,18 @@ module.exports = function (grunt) {
         livereload: true
       },
       files: [
-        'Gruntfile.js',
-        'src/**/*'
-      ],
-      tasks: ['default']
+        'src/ng-split.js',
+        'example/index.html'
+      ]
     },
     connect: {
       server: {
         options: {
-          hostname: '*'
+          hostname: '*',
+          livereload: true,
+          onCreateServer: function(server, connect, options) {
+            require('open')('http://localhost:8000/');
+          }
         }
       }
     }
@@ -92,7 +95,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['jshint', 'karma:unit']);
   grunt.registerTask('default', ['jshint:beforeConcat', 'concat', 'jshint:afterConcat', 'uglify']);
-  grunt.registerTask('livereload', ['default', 'connect:server', 'watch']);
+  grunt.registerTask('livereload', ['connect:server', 'watch']);
 
 };
 
