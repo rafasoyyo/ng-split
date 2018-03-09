@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ng-split Example</title>
+
+    <style>
+            .split p {
+                padding: 20px;
+            }
+
+            .split {
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .gutter {
+                background-color: #eee;
+
+                background-repeat: no-repeat;
+                background-position: 50%;
+            }
+
+            .gutter.gutter-horizontal {
+                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+                cursor: ew-resize;
+            }
+
+            .gutter.gutter-vertical {
+                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFCAMAAABl/6zIAAAABlBMVEUAAADMzMzIT8AyAAAAAXRSTlMAQObYZgAAABRJREFUeAFjYGRkwIMJSeMHlBkOABP7AEGzSuPKAAAAAElFTkSuQmCC');
+                /* cursor: ns-resize; */
+            }
+
+            .split.split-horizontal,
+            .gutter.gutter-horizontal {
+                height: 100%;
+                float: left;
+            }
+        </style>
+
+    <script src="../node_modules/split.js/split.js"></script>
+
+    <script src="../node_modules/angular/angular.js"></script>
+    <script src="../node_modules/angular-sanitize/angular-sanitize.js"></script>
+    <script src="../src/ng-split.js"></script>
+    <script>
+        angular.module("splitApp", ['ng-split']).controller("splitCtrl", function($scope){
+            $scope.callback = function(e){
+                console.log('Callback', e)
+            }
+
+        });
+    </script>
+</head>
+
+<body ng-app="splitApp" ng-controller="splitCtrl">
+
+    <split direction="vertical" gutter-size="15" width="100%" height="700" snap-offset="100"
+    on-drag="callback('onDrag')" on-drag-start="callback('onDragStart')" on-drag-end="callback('onDragEnd')" ng-transclude>
+        <split-area size="50" min-size="200" ng-transclude>
+            <p>Lorem ipsum dolor sit amet...</p>
+        </split-area>
+        <split-area size="50" min-size="150" ng-transclude>
+            <p>Sed ut perspiciatis unde omnis iste natus erro...</p>
+        </split-area>
+    </split>
+
+</body>
+
+</html>
