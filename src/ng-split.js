@@ -68,16 +68,16 @@
 
                     angular.forEach($scope.areas, function(a){
                         a.element.css('height', null);
-                        areasOptions.sizes.push(a.size);
+                        areasOptions.sizes.push(isNaN(a.size) ? parseInt(100/$scope.areas) : a.size);
                         areasOptions.elements.push(a.element[0]);
-                        areasOptions.minSizes.push(a.minSize);
+                        areasOptions.minSizes.push( isNaN(a.minSize) ? 100 : a.minSize);
                     });
 
                     var params = {
                         direction: $scope.direction,
                         sizes: areasOptions.sizes,
-                        gutterSize: Number($scope.gutterSize),
-                        snapOffset: Number($scope.snapOffset),
+                        gutterSize: isNaN($scope.gutterSize) ? 10 : $scope.gutterSize,
+                        snapOffset: isNaN($scope.snapOffset) ? 0 : $scope.snapOffset,
                         cursor: $scope.cursor,
                         minSize: areasOptions.minSizes,
                         onDragStart: $scope.onDragStart,
